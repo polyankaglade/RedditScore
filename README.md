@@ -12,31 +12,30 @@ Full documentation and tutorials live here: http://redditscore.readthedocs.io
 
 To install package:
 
-	pip install git+https://github.com/crazyfrogspb/RedditScore.git
+	pip install git+https://github.com/polyankaglade/RedditScore.git
 
-If you want to be able all features of the library, also install these
-dependencies:
+You will also need to install [spacy_russian_tokenizer](https://github.com/aatimofeev/spacy_russian_tokenizer)
 
-	pip install Cython pybind11 selenium keras tensorflow tensorflow-gpu nltk pandas-gbq
-	pip install git+https://github.com/crazyfrogspb/tweepy.git
-	git clone https://github.com/crazyfrogspb/fastText.git
-	cd fastText
-	pip install .
+	pip install git+https://github.com/aatimofeev/spacy_russian_tokenizer.git
+	
+Usage:
+```python
+from redditscore.tokenizer_rus import CrazyTokenizer as RusCrazyTokenizer
+```
 
-- Cython, pybind11, fasttext - for training fastText models
-- keras, tensorflow, tensorflow-gpu - for training neural networks
-- nltk - for using stemming and NLTK stopwords lists
-- pansas-gbq - for collecting Reddit data
-- selenium, tweepy - for collecting Twitter data
+I would strongly recommend to pay attention to the tokenization of units and maybe do smth like
+```python
+from spacy.lang.char_classes import UNITS
+units = UNITS.split('|')
+for u in 'кг|г|мг|мкг|л|мл|гр'.split('|'):
+    if u not in units:
+        units.append(u)
+print(units)
 
-To cite:
+tokens = RusCrazyTokenizer(...).tokenize(text)
+for token in tokens:
+    if token in units:
+        label = 'MEASURE'
+```
 
-    {
-      @misc{Nikitin2018,
-      author = {Nikitin, E.},
-      title = {RedditScore},
-      year = {2018},
-      publisher = {GitHub},
-      journal = {GitHub repository},
-      howpublished = {\url{https://github.com/crazyfrogspb/RedditScore}}
-    }
+or use the option for `extra_patterns`.
